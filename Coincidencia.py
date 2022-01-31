@@ -34,7 +34,7 @@ st.markdown(
     """,
     unsafe_allow_html=True)       
 st.markdown("""<style type="text/css">
-    h1{ background: #f42e62;
+    h1{ background: #FA7268;
     text-align: center;
     padding: 15px;
     font-family: sans-serif;
