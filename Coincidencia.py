@@ -71,8 +71,8 @@ st.markdown("""<style type="text/css">
     text-decoration: underline;
     text-decoration-style: double;
     color: #27348b;}
-    h3{ border-bottom: 2px solid #27348b;
-    border-left: 10px solid #27348b;
+    h3{ border-bottom: 2px solid #2e297b;
+    border-left: 10px solid #2e297b;
     background: #f0e9e9;
     padding: 10px;
     color: black;}
