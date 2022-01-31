@@ -73,7 +73,7 @@ st.markdown("""<style type="text/css">
     color: #27348b;}
     h3{ border-bottom: 2px solid #27348b;
     border-left: 10px solid #27348b;
-    background: #fffdf7;
+    background: #f0e9e9;
     padding: 10px;
     color: black;}
     .imagen-flotar{float:left;}
