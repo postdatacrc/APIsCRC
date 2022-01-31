@@ -34,7 +34,7 @@ st.markdown(
     """,
     unsafe_allow_html=True)       
 st.markdown("""<style type="text/css">
-    h1{ background: #FA7268;
+    h1{ background: #f42e62;
     text-align: center;
     padding: 15px;
     font-family: sans-serif;
@@ -48,7 +48,7 @@ st.markdown("""<style type="text/css">
     .css-m70y {display:none}
     .barra-superior{top: 0;
     position: fixed;
-    background-color: #2e297b;
+    background-color: #f42e62;
     width: 100%;
     color:white;
     z-index: 999;
