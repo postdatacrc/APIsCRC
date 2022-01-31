@@ -66,6 +66,7 @@ st.markdown("""<style type="text/css">
     h2{
     background: #fffdf7;
     text-align: center;
+    background-color:#f0e9e9;
     padding: 10px;
     text-decoration: underline;
     text-decoration-style: double;
