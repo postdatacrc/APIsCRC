@@ -158,8 +158,8 @@ if dataset is not None and dicset is not None:
     coincidenciadato=[]
     tipodato=[]
     for elem in columnas:
-        coincidenciadato.append(BASE[elem].dtypes in tipo_de_dato[DIC[DIC['CAMPO']==elem]['TIPO DE DATO'].values.tolist()[0]])
-        tipodato.append(DIC[DIC['CAMPO']==elem]['TIPO DE DATO'].values.tolist()[0])
+        coincidenciadato.append(BASE[elem].dtypes in tipo_de_dato[DIC[DIC['CAMPO']==elem].iloc[:,1].values.tolist()[0]])
+        tipodato.append(DIC[DIC['CAMPO']==elem].iloc[:,1].values.tolist()[0])
     dictcoincidence={'Columnas':columnas,'Tipo de dato':tipodato,'Coincidencia':coincidenciadato}
     dfcoincidencia=pd.DataFrame.from_dict(dictcoincidence) 
     st.write(dfcoincidencia)    
