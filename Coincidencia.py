@@ -76,6 +76,8 @@ st.markdown("""<style type="text/css">
     background: #f0e9e9;
     padding: 10px;
     color: black;}
+    h4{
+    color: #2e297b;}
     .imagen-flotar{float:left;}
     @media (max-width:1230px){
         .barra-superior{height:160px;} 
@@ -139,34 +141,53 @@ with col2a:
                     
 if dataset is not None and dicset is not None:
     st.write("### Similitud entre la base y su diccionario")
-    st.write("#### Coincidencia nombres")    
-    st.write("Primero se verificará que los nombres de las columnas de la base coincidan con su diccionario")
+    st.write("""<ul><li><h4>Coincidencia nombres</h4></li></ul>""",unsafe_allow_html=True)    
+    st.write("##### Primero se verificará que los nombres de las columnas de la base coincidan con su diccionario")
     st.write("¿Los nombres del diccionario coinciden con las columnas de la base?",sorted(BASE.columns.to_list()) == sorted(DIC['CAMPO'].unique()))   
     if len(list(set(BASE.columns)^(set(DIC['CAMPO'].unique()))))==0:
         st.write('!Éxito¡ no hay columnas que difieran entre la base y el diccionario')
     else:
         st.warning('Hay discrepancias en los nombres de las bases y el diccionario. Las columnas que difieren son:')
-        st.write(list(sorted(set(BASE.columns)^(set(DIC['CAMPO'].unique())))))
+        st.warning(list(sorted(set(BASE.columns)^(set(DIC['CAMPO'].unique())))))
         set(BASE.columns).symmetric_difference(set(DIC['CAMPO'].unique()))
         BASE.columns=DIC['CAMPO'].unique()
         
-    st.write("#### Coincidencia tipo de dato")    
-    st.write("Ahora se verificará la coincidencia entre el tipo de dato de cada columna de la base y lo reportado en su diccionario") 
-    
-    tipo_de_dato={'Numérico':['int64','float','float64','int'],'Texto':['str','O']}
+    st.write("""<ul><li><h4>Coincidencia tipo de dato</h4></li></ul>""",unsafe_allow_html=True)       
+    st.write("##### En primer lugar se verifica que los tipos de datos reportados en el diccionario sean los correctos.")     
+    tipo_de_dato={'Numérico':['int64','float','float64','int'],'Texto':['str','O'],'Fecha':['str','O'],'Hora':['str','O']}
+    td_aprobado=['Numérico','Texto','Fecha','Hora']
     columnas=DIC['CAMPO'].unique().tolist()    
+    nombresDic=DIC.columns.values.tolist()
+    nombresDic=[elem.lower() for elem in nombresDic]
     coincidenciadato=[]
     tipodato=[]
-    for elem in columnas:
-        coincidenciadato.append(BASE[elem].dtypes in tipo_de_dato[DIC[DIC['CAMPO']==elem]['TIPO DE DATO'].values.tolist()[0]])
-        tipodato.append(DIC[DIC['CAMPO']==elem]['TIPO DE DATO'].values.tolist()[0])
-    dictcoincidence={'Columnas':columnas,'Tipo de dato':tipodato,'Coincidencia':coincidenciadato}
-    dfcoincidencia=pd.DataFrame.from_dict(dictcoincidence) 
-    st.write(dfcoincidencia)    
-    # if 'false' in dfcoincidencia.Coincidencia.unique().tolist()==True:
-        # st.warning('This is a warning')
-    # else:
-        # pass
+    if 'tipo de dato' not in nombresDic:
+        st.warning('La columna que tiene la información sobre la categoría del dato se debe llamar "TIPO DE DATO". Se debe corregir el diccionario')
+    else:
+        tipo_dato_en_dic=DIC['TIPO DE DATO'].unique().tolist()
+        diftipodato=list(set(tipo_dato_en_dic)-set(td_aprobado))
+        if len(diftipodato) >0:
+            st.write("""<b>ERROR!!</b>""",unsafe_allow_html=True)
+            st.warning('Hay tipos de dato en el diccionario que no concuerdan con los valores permitidos: [Texto,Numérico,Fecha,Hora]')
+            st.write('Los valores que están en el diccionario y no están permitidos son')
+            st.warning(diftipodato)
+        else: 
+            st.write("""<b>Muy bien!!</b> los tipos de datos reportados en el diccionario son correctos!""",unsafe_allow_html=True)
+            for elem in columnas:
+                coincidenciadato.append(BASE[elem].dtypes in tipo_de_dato[DIC[DIC['CAMPO']==elem]['TIPO DE DATO'].values.tolist()[0]])
+                tipodato.append(DIC[DIC['CAMPO']==elem]['TIPO DE DATO'].values.tolist()[0])
+            st.write("##### Ahora se verificará la coincidencia entre el tipo de dato de cada columna de la base y lo reportado en su diccionario")    
+            dictcoincidence={'Columnas':columnas,'Tipo de dato':tipodato,'Coincidencia':coincidenciadato}
+            dfcoincidencia=pd.DataFrame.from_dict(dictcoincidence) 
+            st.write(dfcoincidencia)
+            if False in dfcoincidencia.Coincidencia.unique().tolist():
+                st.warning('las siguientes columnas no tienen el tipo de dato correcto y deben ser corregidas:')
+                st.write(dfcoincidencia[dfcoincidencia['Coincidencia']==False]['Columnas'].values.tolist())    
+        if 'FECHA' in columnas:
+            st.write("""<ul><li><h4>Verificaciones adicionales</h4></li></ul>""",unsafe_allow_html=True)
+            st.write('True')
+            
+            
 ###################################################################################################################################################
 
 if dataset is not None:
@@ -196,4 +217,3 @@ if dataset is not None:
     st.write("#### Indicador exactitud y completitud")
     IndicadorExactitud=round(2.5*(2*NFXC-Ntot-NEV)/NFXC,3)
     st.write("! El indicador de exactitud y completitud de la base es:",IndicadorExactitud,'¡')
-    
