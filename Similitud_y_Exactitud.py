@@ -192,28 +192,32 @@ if dataset is not None and dicset is not None:
 
 if dataset is not None:
     st.write("### Calculador completitud")
-    st.write("#### Dimensión de la base")
-    NFXC=BASE.shape[0]*BASE.shape[1] #Número de filas por columnas
-    st.write('El número de filas por columnas es:',NFXC)
-    st.write("#### Espacios vacíos en la base")
-    Espaciosvacios=[str(len(BASE[BASE[cols] == ''])) for cols in BASE.columns]
-    Columnas=BASE.columns.values
-    ColsEspaciosvacios=[a+'='+b for a,b in zip(Columnas,Espaciosvacios)]
-    NEV=sum([len(BASE[BASE[cols] == '']) for cols in BASE.columns]) #Número de espacios vacíos en la base de datos
-    st.write('los números de los espacios vacíos en las columnas son:')
-    st.write(ColsEspaciosvacios)
-    st.write("#### Espacios nulos en la base")
-    Columnasfloat=BASE.loc[:, BASE.dtypes == np.float64].columns.tolist()
-    Columnasint=BASE.loc[:, BASE.dtypes == np.int64].columns.tolist()
-    Columnasstr=BASE.loc[:, BASE.dtypes == object].columns.tolist()
-    NAfloats=sum([BASE[cols].isnull().values.sum() for cols in Columnasfloat]) #Número de campos nulos en columnas numéricas tipo float
-    NAint=sum([BASE[cols].isnull().values.sum() for cols in Columnasint]) #Número de campos nulos en columnas numéricas tipo int
-    Ntot=NAfloats+NAint
-    ColsintNA=[a+'='+b for a,b in zip(Columnasint,[str(BASE[cols].isnull().values.sum()) for cols in Columnasint])]
-    ColsfloatNA=[a+'='+b for a,b in zip(Columnasfloat,[str(BASE[cols].isnull().values.sum()) for cols in Columnasfloat])]
-    ColsstrNA=[a+'='+b for a,b in zip(Columnasstr,[str(BASE[cols].isnull().values.sum()) for cols in Columnasstr])]
-    st.write('Los valores nulos en las columnas son:')
-    st.write(ColsintNA+ColsfloatNA+ColsstrNA)
+    colex1,colex2,colex3 = st.columns(3)
+    with colex1:
+        st.write("#### Dimensión de la base")
+        NFXC=BASE.shape[0]*BASE.shape[1] #Número de filas por columnas
+        st.write('El número de filas por columnas es:',NFXC)
+    with colex2: 
+        st.write("#### Espacios vacíos en la base")
+        Espaciosvacios=[str(len(BASE[BASE[cols] == ''])) for cols in BASE.columns]
+        Columnas=BASE.columns.values
+        ColsEspaciosvacios=[a+'='+b for a,b in zip(Columnas,Espaciosvacios)]
+        NEV=sum([len(BASE[BASE[cols] == '']) for cols in BASE.columns]) #Número de espacios vacíos en la base de datos
+        st.write('los números de los espacios vacíos en las columnas son:')
+        st.write(ColsEspaciosvacios)
+    with colex3:    
+        st.write("#### Espacios nulos en la base")
+        Columnasfloat=BASE.loc[:, BASE.dtypes == np.float64].columns.tolist()
+        Columnasint=BASE.loc[:, BASE.dtypes == np.int64].columns.tolist()
+        Columnasstr=BASE.loc[:, BASE.dtypes == object].columns.tolist()
+        NAfloats=sum([BASE[cols].isnull().values.sum() for cols in Columnasfloat]) #Número de campos nulos en columnas numéricas tipo float
+        NAint=sum([BASE[cols].isnull().values.sum() for cols in Columnasint]) #Número de campos nulos en columnas numéricas tipo int
+        Ntot=NAfloats+NAint
+        ColsintNA=[a+'='+b for a,b in zip(Columnasint,[str(BASE[cols].isnull().values.sum()) for cols in Columnasint])]
+        ColsfloatNA=[a+'='+b for a,b in zip(Columnasfloat,[str(BASE[cols].isnull().values.sum()) for cols in Columnasfloat])]
+        ColsstrNA=[a+'='+b for a,b in zip(Columnasstr,[str(BASE[cols].isnull().values.sum()) for cols in Columnasstr])]
+        st.write('Los valores nulos en las columnas son:')
+        st.write(ColsintNA+ColsfloatNA+ColsstrNA)
     st.write("#### Indicador exactitud y completitud")
     IndicadorExactitud=round(2.5*(2*NFXC-Ntot-NEV)/NFXC,3)
     st.write("! El indicador de exactitud y completitud de la base es:",IndicadorExactitud,'¡')
