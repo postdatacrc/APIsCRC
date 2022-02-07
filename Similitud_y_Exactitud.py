@@ -220,4 +220,4 @@ if dataset is not None:
         st.write(ColsintNA+ColsfloatNA+ColsstrNA)
     st.write("#### Indicador exactitud y completitud")
     IndicadorExactitud=round(2.5*(2*NFXC-Ntot-NEV)/NFXC,3)
-    st.write("! El indicador de exactitud y completitud de la base es:",IndicadorExactitud,'¡')
+    st.write("¡ El indicador de exactitud y completitud de la base es:",IndicadorExactitud,'!')
