@@ -205,7 +205,7 @@ if dataset is not None and dicset is not None:
                 dictcoincidence={'Columnas':columnas,'Tipo de dato':tipodato,'Coincidencia':coincidenciadato}
                 dfcoincidencia=pd.DataFrame.from_dict(dictcoincidence) 
                 col1,col2=st.columns(2)
-                with col2:
+                with col1:
                     AgGrid(dfcoincidencia)
                 if False in dfcoincidencia.Coincidencia.unique().tolist():
                     st.warning('las siguientes columnas no tienen el tipo de dato correcto y deben ser corregidas:')
