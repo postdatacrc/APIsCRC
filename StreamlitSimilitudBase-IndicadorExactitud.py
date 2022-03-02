@@ -106,7 +106,8 @@ def validate(date_text):
 
 st.title("Similitud entre base-diccionario y calculador indicador exactitud")
 
-na_values = ["", 
+na_values = [
+#             "", 
              "#N/A", 
              "#N/A N/A", 
              "#NA", 
@@ -135,7 +136,7 @@ with col1a:
         else:    
             dataset.seek(0)
             colsbase=[];
-            BASE = pd.read_csv(dataset,delimiter=';',keep_default_na=False,na_values=na_values,encoding='latin-1',low_memory=False)
+            BASE = pd.read_csv(dataset,delimiter=';',keep_default_na=False,na_values=na_values,encoding='latin-1',low_memory=False,skip_blank_lines=False)
             colsbase=BASE.columns.tolist()
             colsbase=[elem.replace("ï»¿", "") for elem in colsbase]
             BASE.columns=colsbase
@@ -150,7 +151,7 @@ with col2a:
             st.write('Por favor cargue aquí el diccionario, no la base de datos')
         else:    
             dicset.seek(0)
-            DIC = pd.read_csv(dicset,delimiter=';',keep_default_na=False,na_values='NA',encoding='latin-1',low_memory=False)
+            DIC = pd.read_csv(dicset,delimiter=';',keep_default_na=False,na_values='NA',encoding='latin-1',low_memory=False,skip_blank_lines=False)
             AgGrid(DIC)
                     
 if dataset is not None and dicset is not None:
