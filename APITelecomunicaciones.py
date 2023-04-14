@@ -169,7 +169,7 @@ if select_servicio=='Internet fijo':
                 time.sleep(0.1)
                 progress_bar.progress(i+1)                        
             AgGrid(AccIntFijo,width_mode='fit_columns')
-            st.download_button(label="Descargar CSV",data=convert_df(AccIntFijo),file_name='Historico_descarga_Colombia.csv',mime='text/csv')        
+            st.download_button(label="Descargar CSV",data=convert_df(AccIntFijo),file_name='AccesosIntFijo.csv',mime='text/csv')        
         else:
             pass
     else:    
