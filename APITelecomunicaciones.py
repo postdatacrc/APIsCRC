@@ -164,12 +164,15 @@ if select_servicio=='Internet fijo':
         DFIntFijoAcc=st.button('Generar base de datos')   
         if len(columnsagrupACCIntfijo)!=0 and DFIntFijoAcc==True:
             AccIntFijo=API(id_accesos_Intfijo,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupACCIntfijo)  
-            progress_bar = st.progress(0)
-            for i in range(100):
-                time.sleep(0.1)
-                progress_bar.progress(i+1)                        
-            AgGrid(AccIntFijo,width_mode='fit_columns')
-            st.download_button(label="Descargar CSV",data=convert_df(AccIntFijo),file_name='AccesosIntFijo.csv',mime='text/csv')        
+            if AccIntFijo.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(100):
+                    time.sleep(0.1)
+                    progress_bar.progress(i+1)                        
+                AgGrid(AccIntFijo,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(AccIntFijo),file_name='AccesosIntFijo.csv',mime='text/csv')        
         else:
             pass
     else:    
