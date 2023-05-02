@@ -110,7 +110,7 @@ def API(resourceid,columns_fields,columns,filters,metric,grouping_col):
              +columns_fields\
              +'&group_by='+columns\
              +'&'+metric+'='+grouping_col 
-    response_base = urlopen(consulta + '&limit=10000000') 
+    response_base = urlopen(consulta.replace(" ", "%20")+ '&limit=10000000') 
     json_base = json.loads(response_base.read())
     df = pd.DataFrame(json_base['result']['records'])
     DF = DF.append(df)
@@ -161,7 +161,7 @@ if select_servicio=='Internet fijo':
                 filter_string += f'&{key}={val}'   
   
         agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
-        DFIntFijoAcc=st.checkbox('Generar base de datos')   
+        DFIntFijoAcc=st.button('Generar base de datos')   
         if len(columnsagrupACCIntfijo)!=0 and DFIntFijoAcc==True:
             AccIntFijo=API(id_accesos_Intfijo,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupACCIntfijo)  
             progress_bar = st.progress(0)
