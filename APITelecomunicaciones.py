@@ -5,6 +5,7 @@ import plotly.express as px
 import streamlit as st
 from plotly.subplots import make_subplots
 import glob
+import re
 import os
 from urllib.request import urlopen
 import json
@@ -129,8 +130,9 @@ if select_servicio=='Internet fijo':
         with col1:
             columnsagrupACCIntfijo=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_accesos_Intfijo))
         with col2:
-            valagrupACCIntfijo=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_accesos_Intfijo),len(GetAllColumns(id_accesos_Intfijo))-1)
-            
+            position_acc=[i for i, item in enumerate(GetAllColumns(id_accesos_Intfijo)) if re.search(re.compile("acc"), item)][0]
+            valagrupACCIntfijo=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_accesos_Intfijo),position_acc)
+        columnsagrupACCIntfijo_len = len(columnsagrupACCIntfijo)    
         filter_string = ''
         fields_str = "&fields[]="
         for column in columnsagrupACCIntfijo:
@@ -138,7 +140,8 @@ if select_servicio=='Internet fijo':
         fields_str = fields_str[:-10]       
         columns_groupby_API=','.join([str(col) for col in columnsagrupACCIntfijo])       
         Filtros_IntFijoAcc=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
-        if Filtros_IntFijoAcc:
+
+        if Filtros_IntFijoAcc==True and columnsagrupACCIntfijo_len!=0:
             st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
             num_cols = len(columnsagrupACCIntfijo)
             col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
@@ -158,7 +161,7 @@ if select_servicio=='Internet fijo':
   
         agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
         DFIntFijoAcc=st.button('Generar base de datos')   
-        columnsagrupACCIntfijo_len = len(columnsagrupACCIntfijo)
+        
         if  columnsagrupACCIntfijo_len!=0 and DFIntFijoAcc==True:
             AccIntFijo=API(id_accesos_Intfijo,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupACCIntfijo)  
             if AccIntFijo.empty==True:
@@ -168,16 +171,18 @@ if select_servicio=='Internet fijo':
                 for i in range(1, 101):
                     progress_bar.progress(i)                        
                 AgGrid(AccIntFijo,width_mode='fit_columns')
-                st.download_button(label="Descargar CSV",data=convert_df(AccIntFijo),file_name='Accesos_IntFijo.csv',mime='text/csv')        
-    else:    
+                st.download_button(label="Descargar CSV",data=convert_df(AccIntFijo),file_name='Accesos_IntFijo.csv',mime='text/csv')   
+                
+    elif select_dimen=='Ingresos':     
         st.markdown("#### <center>Ingresos</center>",unsafe_allow_html=True)
         id_ingresos_Intfijo='d917a68d-9cb9-4257-82f1-74115a4cf629'
         col1,col2=st.columns(2)
         with col1:
             columnsagrupINGIntfijo=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_ingresos_Intfijo))
         with col2:
-            valagrupINGIntfijo=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_Intfijo),len(GetAllColumns(id_ingresos_Intfijo))-1)
-            
+            position_ing=[i for i, item in enumerate(GetAllColumns(id_ingresos_Intfijo)) if re.search(re.compile("ingreso"), item)][0]
+            valagrupINGIntfijo=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_Intfijo),position_ing)
+        columnsagrupINGIntfijo_len = len(columnsagrupINGIntfijo)    
         filter_string = ''
         fields_str = "&fields[]="
         for column in columnsagrupINGIntfijo:
@@ -185,7 +190,7 @@ if select_servicio=='Internet fijo':
         fields_str = fields_str[:-10]       
         columns_groupby_API=','.join([str(col) for col in columnsagrupINGIntfijo])       
         Filtros_IntFijoING=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
-        if Filtros_IntFijoING:
+        if Filtros_IntFijoING==True and columnsagrupINGIntfijo_len!=0:
             st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
             num_cols = len(columnsagrupINGIntfijo)
             col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
@@ -205,7 +210,7 @@ if select_servicio=='Internet fijo':
   
         agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
         DFIntFijoING=st.button('Generar base de datos')   
-        columnsagrupINGIntfijo_len = len(columnsagrupINGIntfijo)
+        
         if  columnsagrupINGIntfijo_len!=0 and DFIntFijoING==True:
             INGIntFijo=API(id_ingresos_Intfijo,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupINGIntfijo)  
             if INGIntFijo.empty==True:
@@ -231,8 +236,9 @@ elif select_servicio=='Internet móvil':
             with col1:
                 columnsagrupAboIntmovilDDA=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_abonados_IntmovilDemanda))
             with col2:
-                valagrupAboIntmovilDem=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_abonados_IntmovilDemanda),len(GetAllColumns(id_abonados_IntmovilDemanda))-1)
-                
+                position_abo=[i for i, item in enumerate(GetAllColumns(id_abonados_IntmovilDemanda)) if re.search(re.compile("abona"), item)][0]
+                valagrupAboIntmovilDem=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_abonados_IntmovilDemanda),position_abo)
+            columnsagrupAboIntmovilDDA_len = len(columnsagrupAboIntmovilDDA)    
             filter_string = ''
             fields_str = "&fields[]="
             for column in columnsagrupAboIntmovilDDA:
@@ -240,7 +246,7 @@ elif select_servicio=='Internet móvil':
             fields_str = fields_str[:-10]       
             columns_groupby_API=','.join([str(col) for col in columnsagrupAboIntmovilDDA])       
             Filtros_IntmovilAboDDA=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
-            if Filtros_IntmovilAboDDA:
+            if Filtros_IntmovilAboDDA==True and columnsagrupAboIntmovilDDA_len!=0:
                 st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
                 num_cols = len(columnsagrupAboIntmovilDDA)
                 col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
@@ -260,7 +266,7 @@ elif select_servicio=='Internet móvil':
       
             agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
             DFIntmovilAboDDA=st.button('Generar base de datos')   
-            columnsagrupAboIntmovilDDA_len = len(columnsagrupAboIntmovilDDA)
+            
             if  columnsagrupAboIntmovilDDA_len!=0 and DFIntmovilAboDDA==True:
                 AboIntMovilDDA=API(id_abonados_IntmovilDemanda,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupAboIntmovilDem)  
                 if AboIntMovilDDA.empty==True:
@@ -279,8 +285,9 @@ elif select_servicio=='Internet móvil':
             with col1:
                 columnsagrupIngIntmovilDDA=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_ingresos_IntmovilDemanda))
             with col2:
-                valagrupIngIntmovilDem=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_IntmovilDemanda),len(GetAllColumns(id_ingresos_IntmovilDemanda))-1)
-                
+                position_ing=[i for i, item in enumerate(GetAllColumns(id_ingresos_IntmovilDemanda)) if re.search(re.compile("ingreso"), item)][0]
+                valagrupIngIntmovilDem=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_IntmovilDemanda),position_ing)
+            columnsagrupIngIntmovilDDA_len = len(columnsagrupIngIntmovilDDA)    
             filter_string = ''
             fields_str = "&fields[]="
             for column in columnsagrupIngIntmovilDDA:
@@ -288,7 +295,7 @@ elif select_servicio=='Internet móvil':
             fields_str = fields_str[:-10]       
             columns_groupby_API=','.join([str(col) for col in columnsagrupIngIntmovilDDA])       
             Filtros_IntmovilIngDDA=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
-            if Filtros_IntmovilIngDDA:
+            if Filtros_IntmovilIngDDA==True and columnsagrupIngIntmovilDDA_len!=0:
                 st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
                 num_cols = len(columnsagrupIngIntmovilDDA)
                 col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
@@ -308,7 +315,7 @@ elif select_servicio=='Internet móvil':
       
             agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
             DFIntmovilIngDDA=st.button('Generar base de datos')   
-            columnsagrupIngIntmovilDDA_len = len(columnsagrupIngIntmovilDDA)
+            
             if  columnsagrupIngIntmovilDDA_len!=0 and DFIntmovilIngDDA==True:
                 IngIntMovilDDA=API(id_ingresos_IntmovilDemanda,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupIngIntmovilDem)  
                 if IngIntMovilDDA.empty==True:
@@ -327,8 +334,9 @@ elif select_servicio=='Internet móvil':
             with col1:
                 columnsagrupTrafIntmovilDDA=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_trafico_IntmovilDemanda))
             with col2:
-                valagrupTrafIntmovilDem=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_trafico_IntmovilDemanda),len(GetAllColumns(id_trafico_IntmovilDemanda))-1)
-                
+                position_traf=[i for i, item in enumerate(GetAllColumns(id_trafico_IntmovilDemanda)) if re.search(re.compile("trafico"), item)][0]
+                valagrupTrafIntmovilDem=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_trafico_IntmovilDemanda),position_traf)
+            columnsagrupTrafIntmovilDDA_len = len(columnsagrupTrafIntmovilDDA)
             filter_string = ''
             fields_str = "&fields[]="
             for column in columnsagrupTrafIntmovilDDA:
@@ -336,7 +344,7 @@ elif select_servicio=='Internet móvil':
             fields_str = fields_str[:-10]       
             columns_groupby_API=','.join([str(col) for col in columnsagrupTrafIntmovilDDA])       
             Filtros_IntmovilTrafDDA=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
-            if Filtros_IntmovilTrafDDA:
+            if Filtros_IntmovilTrafDDA==True and columnsagrupTrafIntmovilDDA_len!=0:
                 st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
                 num_cols = len(columnsagrupTrafIntmovilDDA)
                 col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
@@ -356,7 +364,7 @@ elif select_servicio=='Internet móvil':
       
             agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
             DFIntmovilTrafDDA=st.button('Generar base de datos')   
-            columnsagrupTrafIntmovilDDA_len = len(columnsagrupTrafIntmovilDDA)
+            
             if  columnsagrupTrafIntmovilDDA_len!=0 and DFIntmovilTrafDDA==True:
                 TrafIntMovilDDA=API(id_trafico_IntmovilDemanda,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupTrafIntmovilDem)  
                 if TrafIntMovilDDA.empty==True:
@@ -367,3 +375,508 @@ elif select_servicio=='Internet móvil':
                         progress_bar.progress(i)                        
                     AgGrid(TrafIntMovilDDA,width_mode='fit_columns')
                     st.download_button(label="Descargar CSV",data=convert_df(TrafIntMovilDDA),file_name='Trafico_IntMovil_Demanda.csv',mime='text/csv')                                  
+
+    if select_agrupIntmovil=='Cargo Fijo': 
+        select_dimen=st.selectbox('Escoja la variable',['Suscriptores','Ingresos','Tráfico'])
+
+        if select_dimen=='Suscriptores':
+            st.markdown("#### <center>Suscriptores</center>",unsafe_allow_html=True)
+            id_suscriptores_IntmovilCargoFijo='47d07e20-b257-4aaf-9309-1501c75a826c'
+            col1,col2=st.columns(2)
+            with col1:
+                columnsagrupSusIntmovilCF=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_suscriptores_IntmovilCargoFijo))
+            with col2:
+                position_sus=[i for i, item in enumerate(GetAllColumns(id_suscriptores_IntmovilCargoFijo)) if re.search(re.compile("susc"), item)][0]
+                valagrupSusIntmovilCF=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_suscriptores_IntmovilCargoFijo),position_sus)
+            columnsagrupSusIntmovilCF_len = len(columnsagrupSusIntmovilCF)    
+            filter_string = ''
+            fields_str = "&fields[]="
+            for column in columnsagrupSusIntmovilCF:
+                fields_str += column + "&fields[]="
+            fields_str = fields_str[:-10]       
+            columns_groupby_API=','.join([str(col) for col in columnsagrupSusIntmovilCF])       
+            Filtros_IntmovilSusCF=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+            if Filtros_IntmovilSusCF==True and columnsagrupSusIntmovilCF_len!=0:
+                st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+                num_cols = len(columnsagrupSusIntmovilCF)
+                col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+                code = f"{col_vars}=st.columns({num_cols})"
+                exec(code)
+                values = {}
+                for i, column_var in enumerate(eval(f'({col_vars})')):
+                    with column_var:
+                        text_input = st.text_input(columnsagrupSusIntmovilCF[i])
+                        values[columnsagrupSusIntmovilCF[i]] = text_input
+                filters = {}
+                for key, val in values.items():
+                    if val:
+                        filters[f'filters[{key}]'] = ','.join(val.split(','))            
+                for key, val in filters.items():
+                    filter_string += f'&{key}={val}'   
+      
+            agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+            DF=st.button('Generar base de datos')   
+            columnsagrupSusIntmovilCF_len = len(columnsagrupSusIntmovilCF)
+            if  columnsagrupSusIntmovilCF_len!=0 and DF==True:
+                SusIntMovilCF=API(id_suscriptores_IntmovilCargoFijo,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupSusIntmovilCF)  
+                if SusIntMovilCF.empty==True:
+                    st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+                else:
+                    progress_bar = st.progress(0)
+                    for i in range(1, 101):
+                        progress_bar.progress(i)                        
+                    AgGrid(SusIntMovilCF,width_mode='fit_columns')
+                    st.download_button(label="Descargar CSV",data=convert_df(SusIntMovilCF),file_name='Suscriptores_IntMovil_CargoFijo.csv',mime='text/csv')        
+    
+        if select_dimen=='Ingresos':
+            st.markdown("#### <center>Ingresos</center>",unsafe_allow_html=True)
+            id_ingresos_IntmovilCargoFijo='8366e39c-6a14-483a-80f4-7278ceb39f88'
+            col1,col2=st.columns(2)
+            with col1:
+                columnsagrupIngIntmovilCF=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_ingresos_IntmovilCargoFijo))
+            with col2:
+                position_ing=[i for i, item in enumerate(GetAllColumns(id_ingresos_IntmovilCargoFijo)) if re.search(re.compile("ingreso"), item)][0]
+                valagrupIngIntmovilCF=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_IntmovilCargoFijo),position_ing)
+            columnsagrupIngIntmovilCF_len = len(columnsagrupIngIntmovilCF)    
+            filter_string = ''
+            fields_str = "&fields[]="
+            for column in columnsagrupIngIntmovilCF:
+                fields_str += column + "&fields[]="
+            fields_str = fields_str[:-10]       
+            columns_groupby_API=','.join([str(col) for col in columnsagrupIngIntmovilCF])       
+            Filtros_IntmovilIngCF=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+            if Filtros_IntmovilIngCF==True and columnsagrupIngIntmovilCF_len!=0:
+                st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+                num_cols = len(columnsagrupIngIntmovilCF)
+                col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+                code = f"{col_vars}=st.columns({num_cols})"
+                exec(code)
+                values = {}
+                for i, column_var in enumerate(eval(f'({col_vars})')):
+                    with column_var:
+                        text_input = st.text_input(columnsagrupIngIntmovilCF[i])
+                        values[columnsagrupIngIntmovilCF[i]] = text_input
+                filters = {}
+                for key, val in values.items():
+                    if val:
+                        filters[f'filters[{key}]'] = ','.join(val.split(','))            
+                for key, val in filters.items():
+                    filter_string += f'&{key}={val}'   
+      
+            agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+            DF=st.button('Generar base de datos')   
+            columnsagrupIngIntmovilCF_len = len(columnsagrupIngIntmovilCF)
+            if  columnsagrupIngIntmovilCF_len!=0 and DF==True:
+                IngIntMovilCF=API(id_ingresos_IntmovilCargoFijo,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupIngIntmovilCF)  
+                if IngIntMovilCF.empty==True:
+                    st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+                else:
+                    progress_bar = st.progress(0)
+                    for i in range(1, 101):
+                        progress_bar.progress(i)                        
+                    AgGrid(IngIntMovilCF,width_mode='fit_columns')
+                    st.download_button(label="Descargar CSV",data=convert_df(IngIntMovilCF),file_name='Ingresos_IntMovil_CargoFijo.csv',mime='text/csv')      
+
+        if select_dimen=='Tráfico':
+            st.markdown("#### <center>Tráfico</center>",unsafe_allow_html=True)
+            id_trafico_IntmovilCargoFijo='d40c5e75-db56-4ec1-a441-0314c47bd71d'
+            col1,col2=st.columns(2)
+            with col1:
+                columnsagrupTrafIntmovilCF=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_trafico_IntmovilCargoFijo))
+            with col2:
+                position_traf=[i for i, item in enumerate(GetAllColumns(id_trafico_IntmovilCargoFijo)) if re.search(re.compile("traf"), item)][0]
+                valagrupTrafIntmovilCF=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_trafico_IntmovilCargoFijo),position_traf)
+            columnsagrupTrafIntmovilCF_len = len(columnsagrupTrafIntmovilCF)    
+            filter_string = ''
+            fields_str = "&fields[]="
+            for column in columnsagrupTrafIntmovilCF:
+                fields_str += column + "&fields[]="
+            fields_str = fields_str[:-10]       
+            columns_groupby_API=','.join([str(col) for col in columnsagrupTrafIntmovilCF])       
+            Filtros_IntmovilTrafCF=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+            if Filtros_IntmovilTrafCF==True and columnsagrupTrafIntmovilCF_len!=0:
+                st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+                num_cols = len(columnsagrupTrafIntmovilCF)
+                col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+                code = f"{col_vars}=st.columns({num_cols})"
+                exec(code)
+                values = {}
+                for i, column_var in enumerate(eval(f'({col_vars})')):
+                    with column_var:
+                        text_input = st.text_input(columnsagrupTrafIntmovilCF[i])
+                        values[columnsagrupTrafIntmovilCF[i]] = text_input
+                filters = {}
+                for key, val in values.items():
+                    if val:
+                        filters[f'filters[{key}]'] = ','.join(val.split(','))            
+                for key, val in filters.items():
+                    filter_string += f'&{key}={val}'   
+      
+            agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+            DF=st.button('Generar base de datos')   
+            
+            if  columnsagrupTrafIntmovilCF_len!=0 and DF==True:
+                TrafIntMovilCF=API(id_trafico_IntmovilCargoFijo,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupTrafIntmovilCF)  
+                if TrafIntMovilCF.empty==True:
+                    st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+                else:
+                    progress_bar = st.progress(0)
+                    for i in range(1, 101):
+                        progress_bar.progress(i)                        
+                    AgGrid(TrafIntMovilCF,width_mode='fit_columns')
+                    st.download_button(label="Descargar CSV",data=convert_df(TrafIntMovilCF),file_name='Trafico_IntMovil_CargoFijo.csv',mime='text/csv')                          
+                                        
+elif select_servicio=='Telefonía móvil':   
+    st.markdown("### <center>Telefonía movil</center>",unsafe_allow_html=True)    
+    select_dimen=st.selectbox('Escoja la variable',['Abonados','Ingresos','Tráfico'])
+    
+    if select_dimen=='Abonados':
+        st.markdown("#### <center>Abonados</center>",unsafe_allow_html=True)
+        id_abonados_TelMovil='3a9c0304-3795-4c55-a78e-079362373b4d'
+        col1,col2=st.columns(2)
+        with col1:
+            columnsagrupAboTelMovil=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_abonados_TelMovil))
+        with col2:
+            position_abo=[i for i, item in enumerate(GetAllColumns(id_abonados_TelMovil)) if re.search(re.compile("abona"), item)][0]
+            valagrupAboTelMovil=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_abonados_TelMovil),position_abo)
+        columnsagrupAboTelMovil_len = len(columnsagrupAboTelMovil)    
+        filter_string = ''
+        fields_str = "&fields[]="
+        for column in columnsagrupAboTelMovil:
+            fields_str += column + "&fields[]="
+        fields_str = fields_str[:-10]       
+        columns_groupby_API=','.join([str(col) for col in columnsagrupAboTelMovil])       
+        Filtros_TelMovil=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+        if Filtros_TelMovil==True and columnsagrupAboTelMovil_len:
+            st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+            num_cols = len(columnsagrupAboTelMovil)
+            col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+            code = f"{col_vars}=st.columns({num_cols})"
+            exec(code)
+            values = {}
+            for i, column_var in enumerate(eval(f'({col_vars})')):
+                with column_var:
+                    text_input = st.text_input(columnsagrupAboTelMovil[i])
+                    values[columnsagrupAboTelMovil[i]] = text_input
+            filters = {}
+            for key, val in values.items():
+                if val:
+                    filters[f'filters[{key}]'] = ','.join(val.split(','))            
+            for key, val in filters.items():
+                filter_string += f'&{key}={val}'   
+  
+        agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+        DF=st.button('Generar base de datos')   
+        
+        if  columnsagrupAboTelMovil_len!=0 and DF==True:
+            AboTelMovil=API(id_abonados_TelMovil,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupAboTelMovil)  
+            if AboTelMovil.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(1, 101):
+                    progress_bar.progress(i)                        
+                AgGrid(AboTelMovil,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(AboTelMovil),file_name='Abonados_TelMovil.csv',mime='text/csv')        
+
+    if select_dimen=='Ingresos':
+        st.markdown("#### <center>Ingresos</center>",unsafe_allow_html=True)
+        id_ingresos_TelMovil='43f0d3a9-cd5c-4f22-a996-74eae6cba9a3'
+        col1,col2=st.columns(2)
+        with col1:
+            columnsagrupIngTelMovil=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_ingresos_TelMovil))
+        with col2:
+            position_ing=[i for i, item in enumerate(GetAllColumns(id_ingresos_TelMovil)) if re.search(re.compile("ingreso"), item)][0]
+            valagrupIngTelMovil=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_TelMovil),position_ing)
+        columnsagrupIngTelMovil_len = len(columnsagrupIngTelMovil)    
+        filter_string = ''
+        fields_str = "&fields[]="
+        for column in columnsagrupIngTelMovil:
+            fields_str += column + "&fields[]="
+        fields_str = fields_str[:-10]       
+        columns_groupby_API=','.join([str(col) for col in columnsagrupIngTelMovil])       
+        Filtros_IngTelMovil=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+        if Filtros_IngTelMovil==True and columnsagrupIngTelMovil_len!=0:
+            st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+            num_cols = len(columnsagrupIngTelMovil)
+            col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+            code = f"{col_vars}=st.columns({num_cols})"
+            exec(code)
+            values = {}
+            for i, column_var in enumerate(eval(f'({col_vars})')):
+                with column_var:
+                    text_input = st.text_input(columnsagrupIngTelMovil[i])
+                    values[columnsagrupIngTelMovil[i]] = text_input
+            filters = {}
+            for key, val in values.items():
+                if val:
+                    filters[f'filters[{key}]'] = ','.join(val.split(','))            
+            for key, val in filters.items():
+                filter_string += f'&{key}={val}'   
+  
+        agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+        DF=st.button('Generar base de datos')   
+        
+        if  columnsagrupIngTelMovil_len!=0 and DF==True:
+            IngTelMovil=API(id_ingresos_TelMovil,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupIngTelMovil)  
+            if IngTelMovil.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(1, 101):
+                    progress_bar.progress(i)                        
+                AgGrid(IngTelMovil,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(IngTelMovil),file_name='Ingresos_TelMovil.csv',mime='text/csv')         
+
+    if select_dimen=='Tráfico':
+        st.markdown("#### <center>Tráfico</center>",unsafe_allow_html=True)
+        id_trafico_TelMovil='1384a4d4-42d7-4930-b43c-bf9768c47ccb'
+        col1,col2=st.columns(2)
+        with col1:
+            columnsagrupTrafTelMovil=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_trafico_TelMovil))
+        with col2:
+            position_traf=[i for i, item in enumerate(GetAllColumns(id_trafico_TelMovil)) if re.search(r'\b(?!id|tipo)\w*trafico\w*\b', item)][0]
+            valagrupTrafTelMovil=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_trafico_TelMovil),position_traf)
+        columnsagrupTrafTelMovil_len = len(columnsagrupTrafTelMovil)    
+        filter_string = ''
+        fields_str = "&fields[]="
+        for column in columnsagrupTrafTelMovil:
+            fields_str += column + "&fields[]="
+        fields_str = fields_str[:-10]       
+        columns_groupby_API=','.join([str(col) for col in columnsagrupTrafTelMovil])       
+        Filtros_TrafTelMovil=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+        if Filtros_TrafTelMovil==True and columnsagrupTrafTelMovil_len!=0:
+            st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+            num_cols = len(columnsagrupTrafTelMovil)
+            col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+            code = f"{col_vars}=st.columns({num_cols})"
+            exec(code)
+            values = {}
+            for i, column_var in enumerate(eval(f'({col_vars})')):
+                with column_var:
+                    text_input = st.text_input(columnsagrupTrafTelMovil[i])
+                    values[columnsagrupTrafTelMovil[i]] = text_input
+            filters = {}
+            for key, val in values.items():
+                if val:
+                    filters[f'filters[{key}]'] = ','.join(val.split(','))            
+            for key, val in filters.items():
+                filter_string += f'&{key}={val}'   
+  
+        agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+        DF=st.button('Generar base de datos')   
+        
+        if  columnsagrupTrafTelMovil_len!=0 and DF==True:
+            TrafTelMovil=API(id_trafico_TelMovil,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupTrafTelMovil)  
+            if TrafTelMovil.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(1, 101):
+                    progress_bar.progress(i)                        
+                AgGrid(TrafTelMovil,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(TrafTelMovil),file_name='Trafico_TelMovil.csv',mime='text/csv')  
+
+elif select_servicio=='Telefonía local':   
+    st.markdown("### <center>Telefonía local</center>",unsafe_allow_html=True)    
+    select_dimen=st.selectbox('Escoja la variable',['Líneas','Ingresos','Tráfico'])   
+
+    if select_dimen=='Líneas':
+        st.markdown("#### <center>Líneas</center>",unsafe_allow_html=True)
+        id_lineas_TelLocal='967fbbd1-1c10-42b8-a6af-88b2376d43e7'
+        col1,col2=st.columns(2)
+        with col1:
+            columnsagrupLinTelLocal=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_lineas_TelLocal))
+        with col2:
+            position_lin=[i for i, item in enumerate(GetAllColumns(id_lineas_TelLocal)) if re.search(re.compile("linea"), item)][0]
+            valagrupLinTelLocal=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_lineas_TelLocal),position_lin)
+        columnsagrupLinTelLocal_len = len(columnsagrupLinTelLocal)    
+        filter_string = ''
+        fields_str = "&fields[]="
+        for column in columnsagrupLinTelLocal:
+            fields_str += column + "&fields[]="
+        fields_str = fields_str[:-10]       
+        columns_groupby_API=','.join([str(col) for col in columnsagrupLinTelLocal])       
+        Filtros_LinTelLocal=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+        if Filtros_LinTelLocal==True and columnsagrupLinTelLocal_len!=0:
+            st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+            num_cols = len(columnsagrupLinTelLocal)
+            col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+            code = f"{col_vars}=st.columns({num_cols})"
+            exec(code)
+            values = {}
+            for i, column_var in enumerate(eval(f'({col_vars})')):
+                with column_var:
+                    text_input = st.text_input(columnsagrupLinTelLocal[i])
+                    values[columnsagrupLinTelLocal[i]] = text_input
+            filters = {}
+            for key, val in values.items():
+                if val:
+                    filters[f'filters[{key}]'] = ','.join(val.split(','))            
+            for key, val in filters.items():
+                filter_string += f'&{key}={val}'   
+  
+        agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+        DF=st.button('Generar base de datos')   
+        
+        if  columnsagrupLinTelLocal_len!=0 and DF==True:
+            LinTelLocal=API(id_lineas_TelLocal,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupLinTelLocal)  
+            if LinTelLocal.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(1, 101):
+                    progress_bar.progress(i)                        
+                AgGrid(LinTelLocal,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(LinTelLocal),file_name='Lineas_TelLocal.csv',mime='text/csv')        
+        
+    if select_dimen=='Ingresos':
+        st.markdown("#### <center>Ingresos</center>",unsafe_allow_html=True)
+        id_ingresos_TelLocal='f923f3bc-0628-44cc-beed-ca98b8bc3679'
+        col1,col2=st.columns(2)
+        with col1:
+            columnsagrupIngTelLocal=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_ingresos_TelLocal))
+        with col2:
+            position_ing=[i for i, item in enumerate(GetAllColumns(id_ingresos_TelLocal)) if re.search(re.compile("ingreso"), item)][0]
+            valagrupIngTelLocal=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_TelLocal),position_ing)
+        columnsagrupIngTelLocal_len = len(columnsagrupIngTelLocal)    
+        filter_string = ''
+        fields_str = "&fields[]="
+        for column in columnsagrupIngTelLocal:
+            fields_str += column + "&fields[]="
+        fields_str = fields_str[:-10]       
+        columns_groupby_API=','.join([str(col) for col in columnsagrupIngTelLocal])       
+        Filtros_LinTelLocal=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+        if Filtros_LinTelLocal==True and columnsagrupIngTelLocal_len!=0:
+            st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+            num_cols = len(columnsagrupIngTelLocal)
+            col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+            code = f"{col_vars}=st.columns({num_cols})"
+            exec(code)
+            values = {}
+            for i, column_var in enumerate(eval(f'({col_vars})')):
+                with column_var:
+                    text_input = st.text_input(columnsagrupIngTelLocal[i])
+                    values[columnsagrupIngTelLocal[i]] = text_input
+            filters = {}
+            for key, val in values.items():
+                if val:
+                    filters[f'filters[{key}]'] = ','.join(val.split(','))            
+            for key, val in filters.items():
+                filter_string += f'&{key}={val}'   
+  
+        agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+        DF=st.button('Generar base de datos')   
+        
+        if  columnsagrupIngTelLocal_len!=0 and DF==True:
+            IngTelLocal=API(id_ingresos_TelLocal,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupIngTelLocal)  
+            if IngTelLocal.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(1, 101):
+                    progress_bar.progress(i)                        
+                AgGrid(IngTelLocal,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(IngTelLocal),file_name='Ingresos_TelLocal.csv',mime='text/csv')            
+                
+elif select_servicio=='TV por suscripción':   
+    st.markdown("### <center>Televisión por suscripción</center>",unsafe_allow_html=True)    
+    select_dimen=st.selectbox('Escoja la variable',['Suscriptores','Ingresos'])       
+    
+    if select_dimen=='Suscriptores':
+        st.markdown("#### <center>Suscriptores</center>",unsafe_allow_html=True)
+        id_suscriptores_TVporSus='0c4b69a7-734d-432c-9d9b-9dc600d50391'
+        col1,col2=st.columns(2)
+        with col1:
+            columnsagrupSusTvporSus=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_suscriptores_TVporSus))
+        with col2:
+            position_sus=[i for i, item in enumerate(GetAllColumns(id_suscriptores_TVporSus)) if re.search(re.compile("suscrip"), item)][0]
+            valagrupSusTVporSus=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_suscriptores_TVporSus),position_sus)
+        columnsagrupSusTvporSus_len = len(columnsagrupSusTvporSus)    
+        filter_string = ''
+        fields_str = "&fields[]="
+        for column in columnsagrupSusTvporSus:
+            fields_str += column + "&fields[]="
+        fields_str = fields_str[:-10]       
+        columns_groupby_API=','.join([str(col) for col in columnsagrupSusTvporSus])       
+        Filtros_SusTVporSus=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+        if Filtros_SusTVporSus==True and columnsagrupSusTvporSus_len!=0:
+            st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+            num_cols = len(columnsagrupSusTvporSus)
+            col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+            code = f"{col_vars}=st.columns({num_cols})"
+            exec(code)
+            values = {}
+            for i, column_var in enumerate(eval(f'({col_vars})')):
+                with column_var:
+                    text_input = st.text_input(columnsagrupSusTvporSus[i])
+                    values[columnsagrupSusTvporSus[i]] = text_input
+            filters = {}
+            for key, val in values.items():
+                if val:
+                    filters[f'filters[{key}]'] = ','.join(val.split(','))            
+            for key, val in filters.items():
+                filter_string += f'&{key}={val}'   
+  
+        agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+        DF=st.button('Generar base de datos')   
+        
+        if  columnsagrupSusTvporSus_len!=0 and DF==True:
+            SusTVporSus=API(id_suscriptores_TVporSus,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupSusTVporSus)  
+            if SusTVporSus.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(1, 101):
+                    progress_bar.progress(i)                        
+                AgGrid(SusTVporSus,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(SusTVporSus),file_name='Suscriptores_TV_Suscripcion.csv',mime='text/csv')        
+
+    if select_dimen=='Ingresos':
+        st.markdown("#### <center>Ingresos</center>",unsafe_allow_html=True)
+        id_ingresos_TVporSus='1033b0f2-8107-4e04-ae33-8b12882b762d'
+        col1,col2=st.columns(2)
+        with col1:
+            columnsagrupIngTvporSus=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_ingresos_TVporSus))
+        with col2:
+            position_ing=[i for i, item in enumerate(GetAllColumns(id_ingresos_TVporSus)) if re.search(re.compile("ingreso"), item)][0]
+            valagrupIngTVporSus=st.selectbox('Escoja la columna de agrupación',GetAllColumns(id_ingresos_TVporSus),position_ing)
+        columnsagrupIngTvporSus_len = len(columnsagrupIngTvporSus)    
+        filter_string = ''
+        fields_str = "&fields[]="
+        for column in columnsagrupIngTvporSus:
+            fields_str += column + "&fields[]="
+        fields_str = fields_str[:-10]       
+        columns_groupby_API=','.join([str(col) for col in columnsagrupIngTvporSus])       
+        Filtros_IngTVporSus=st.checkbox('¿Desea añadir filtros en algunas de las columnas seleccionadas?')
+        if Filtros_IngTVporSus==True and columnsagrupIngTvporSus_len!=0:
+            st.markdown('Escriba los valores a añadir en los filtros separados por coma. Ej: 2018,2019,2021,2022')
+            num_cols = len(columnsagrupIngTvporSus)
+            col_vars = ','.join([f'col{i+1}' for i in range(num_cols)])
+            code = f"{col_vars}=st.columns({num_cols})"
+            exec(code)
+            values = {}
+            for i, column_var in enumerate(eval(f'({col_vars})')):
+                with column_var:
+                    text_input = st.text_input(columnsagrupIngTvporSus[i])
+                    values[columnsagrupIngTvporSus[i]] = text_input
+            filters = {}
+            for key, val in values.items():
+                if val:
+                    filters[f'filters[{key}]'] = ','.join(val.split(','))            
+            for key, val in filters.items():
+                filter_string += f'&{key}={val}'   
+  
+        agrup_metric=st.selectbox('Escoja la métrica de agrupación',['Suma','Promedio','Mínimo','Máximo','Desviación estándar','Varianza', 'Conteo'],0)
+        DF=st.button('Generar base de datos')   
+        
+        if  columnsagrupIngTvporSus_len!=0 and DF==True:
+            IngTVporSus=API(id_ingresos_TVporSus,fields_str,columns_groupby_API,filter_string,Agroup_metric[agrup_metric],valagrupIngTVporSus)  
+            if IngTVporSus.empty==True:
+                st.warning('No se encontraron datos con los campos o filtros seleccionados. Por favor verifique la información suministrada.', icon="⚠️")
+            else:
+                progress_bar = st.progress(0)
+                for i in range(1, 101):
+                    progress_bar.progress(i)                        
+                AgGrid(IngTVporSus,width_mode='fit_columns')
+                st.download_button(label="Descargar CSV",data=convert_df(IngTVporSus),file_name='Ingresos_TV_Suscripcion.csv',mime='text/csv')       
