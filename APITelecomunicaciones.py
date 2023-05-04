@@ -153,6 +153,7 @@ Agroup_metric={'Suma':'sum','Promedio':'avg','Mínimo':'min','Máximo':'max','De
 if select_servicio=='Internet fijo':
     st.markdown("### <center>Internet fijo</center>",unsafe_allow_html=True)
     select_dimen=st.selectbox('Escoja la variable',['Accesos','Ingresos','Velocidades'])
+    
     if select_dimen=='Accesos':
         st.markdown("#### <center>Accesos</center>",unsafe_allow_html=True)
         id_accesos_Intfijo='34bbf5b5-0537-4bf0-8836-3f51d1a24162'
@@ -204,7 +205,7 @@ if select_servicio=='Internet fijo':
                 st.download_button(label="Descargar CSV",data=convert_df(AccIntFijo),file_name='Accesos_IntFijo.csv',mime='text/csv')   
                 
         cols_accIntfijo=columns_dict('susIntfijo')
-        diff_cols_accIntfijo=list(set(GetAllColumns(id_accesos_Intfijo))-set(cols_accIntfijo))
+        diff_cols_accIntfijo=list(set(GetAllColumns(id_accesos_Intfijo))^set(cols_accIntfijo))
         if len(diff_cols_accIntfijo)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_accIntfijo)
@@ -261,7 +262,7 @@ if select_servicio=='Internet fijo':
                 st.download_button(label="Descargar CSV",data=convert_df(INGIntFijo),file_name='Ingresos_IntFijo.csv',mime='text/csv')        
 
         cols_ingIntfijo=columns_dict('ingIntfijo')
-        diff_cols_ingIntfijo=list(set(GetAllColumns(id_ingresos_Intfijo))-set(cols_ingIntfijo))
+        diff_cols_ingIntfijo=list(set(GetAllColumns(id_ingresos_Intfijo))^set(cols_ingIntfijo))
         if len(diff_cols_ingIntfijo)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_ingIntfijo)
@@ -318,7 +319,7 @@ if select_servicio=='Internet fijo':
                 st.download_button(label="Descargar CSV",data=convert_df(VelIntFijo),file_name='Velocidades_IntFijo.csv',mime='text/csv')        
 
         cols_velIntfijo=columns_dict('velIntfijo')
-        diff_cols_velIntfijo=list(set(GetAllColumns(id_velocidades_Intfijo))-set(cols_velIntfijo))
+        diff_cols_velIntfijo=list(set(GetAllColumns(id_velocidades_Intfijo))^set(cols_velIntfijo))
         if len(diff_cols_velIntfijo)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_velIntfijo)
@@ -382,9 +383,9 @@ elif select_servicio=='Internet móvil':
                     st.download_button(label="Descargar CSV",data=convert_df(AboIntMovilDDA),file_name='Abonados_IntMovil_Demanda.csv',mime='text/csv')        
 
             cols_aboIntmovilDDA=columns_dict('aboIntmovilDDA')
-            diff_cols_aboIntmovilDDA=list(set(GetAllColumns(id_abonados_IntmovilDemanda))-set(cols_aboIntmovilDDA))
+            diff_cols_aboIntmovilDDA=list(set(GetAllColumns(id_abonados_IntmovilDemanda))^set(cols_aboIntmovilDDA))
             if len(diff_cols_aboIntmovilDDA)!=0:
-                st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
+                st.warning('Hay nombres de columnas que difieren con su diccionario.')
                 st.markdown(diff_cols_aboIntmovilDDA)
             else:    
                 st.success('Toda las columnas de la base coinciden con su diccionario.')
@@ -439,7 +440,7 @@ elif select_servicio=='Internet móvil':
                     st.download_button(label="Descargar CSV",data=convert_df(IngIntMovilDDA),file_name='Ingresos_IntMovil_Demanda.csv',mime='text/csv')              
 
             cols_ingIntmovilDDA=columns_dict('ingIntmovilDDA')
-            diff_cols_ingIntmovilDDA=list(set(GetAllColumns(id_ingresos_IntmovilDemanda))-set(cols_ingIntmovilDDA))
+            diff_cols_ingIntmovilDDA=list(set(GetAllColumns(id_ingresos_IntmovilDemanda))^set(cols_ingIntmovilDDA))
             if len(diff_cols_ingIntmovilDDA)!=0:
                 st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
                 st.markdown(diff_cols_ingIntmovilDDA)
@@ -496,7 +497,7 @@ elif select_servicio=='Internet móvil':
                     st.download_button(label="Descargar CSV",data=convert_df(TrafIntMovilDDA),file_name='Trafico_IntMovil_Demanda.csv',mime='text/csv')                                  
 
             cols_trafIntmovilDDA=columns_dict('trafIntmovilDDA')
-            diff_cols_trafIntmovilDDA=list(set(GetAllColumns(id_trafico_IntmovilDemanda))-set(cols_trafIntmovilDDA))
+            diff_cols_trafIntmovilDDA=list(set(GetAllColumns(id_trafico_IntmovilDemanda))^set(cols_trafIntmovilDDA))
             if len(diff_cols_trafIntmovilDDA)!=0:
                 st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
                 st.markdown(diff_cols_trafIntmovilDDA)
@@ -556,7 +557,7 @@ elif select_servicio=='Internet móvil':
                     st.download_button(label="Descargar CSV",data=convert_df(SusIntMovilCF),file_name='Suscriptores_IntMovil_CargoFijo.csv',mime='text/csv')        
 
             cols_susIntmovilCF=columns_dict('susIntmovilCF')
-            diff_cols_susIntmovilCF=list(set(GetAllColumns(id_suscriptores_IntmovilCargoFijo))-set(cols_susIntmovilCF))
+            diff_cols_susIntmovilCF=list(set(GetAllColumns(id_suscriptores_IntmovilCargoFijo))^set(cols_susIntmovilCF))
             if len(diff_cols_susIntmovilCF)!=0:
                 st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
                 st.markdown(diff_cols_susIntmovilCF)
@@ -613,7 +614,7 @@ elif select_servicio=='Internet móvil':
                     st.download_button(label="Descargar CSV",data=convert_df(IngIntMovilCF),file_name='Ingresos_IntMovil_CargoFijo.csv',mime='text/csv')      
 
             cols_ingIntmovilCF=columns_dict('ingIntmovilCF')
-            diff_cols_ingIntmovilCF=list(set(GetAllColumns(id_ingresos_IntmovilCargoFijo))-set(cols_ingIntmovilCF))
+            diff_cols_ingIntmovilCF=list(set(GetAllColumns(id_ingresos_IntmovilCargoFijo))^set(cols_ingIntmovilCF))
             if len(diff_cols_ingIntmovilCF)!=0:
                 st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
                 st.markdown(diff_cols_ingIntmovilCF)
@@ -670,7 +671,7 @@ elif select_servicio=='Internet móvil':
                     st.download_button(label="Descargar CSV",data=convert_df(TrafIntMovilCF),file_name='Trafico_IntMovil_CargoFijo.csv',mime='text/csv')                          
 
             cols_trafIntmovilCF=columns_dict('trafIntmovilCF')
-            diff_cols_trafIntmovilCF=list(set(GetAllColumns(id_trafico_IntmovilCargoFijo))-set(cols_trafIntmovilCF))
+            diff_cols_trafIntmovilCF=list(set(GetAllColumns(id_trafico_IntmovilCargoFijo))^set(cols_trafIntmovilCF))
             if len(diff_cols_trafIntmovilCF)!=0:
                 st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
                 st.markdown(diff_cols_trafIntmovilCF)
@@ -731,7 +732,7 @@ elif select_servicio=='Telefonía móvil':
                 st.download_button(label="Descargar CSV",data=convert_df(AboTelMovil),file_name='Abonados_TelMovil.csv',mime='text/csv')        
 
         cols_aboTelmovil=columns_dict('aboTelmovil')
-        diff_cols_aboTelmovil=list(set(GetAllColumns(id_abonados_TelMovil))-set(cols_aboTelmovil))
+        diff_cols_aboTelmovil=list(set(GetAllColumns(id_abonados_TelMovil))^set(cols_aboTelmovil))
         if len(diff_cols_aboTelmovil)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_aboTelmovil)
@@ -788,7 +789,7 @@ elif select_servicio=='Telefonía móvil':
                 st.download_button(label="Descargar CSV",data=convert_df(IngTelMovil),file_name='Ingresos_TelMovil.csv',mime='text/csv')         
 
         cols_ingTelmovil=columns_dict('ingTelmovil')
-        diff_cols_ingTelmovil=list(set(GetAllColumns(id_ingresos_TelMovil))-set(cols_ingTelmovil))
+        diff_cols_ingTelmovil=list(set(GetAllColumns(id_ingresos_TelMovil))^set(cols_ingTelmovil))
         if len(diff_cols_ingTelmovil)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_ingTelmovil)
@@ -845,7 +846,7 @@ elif select_servicio=='Telefonía móvil':
                 st.download_button(label="Descargar CSV",data=convert_df(TrafTelMovil),file_name='Trafico_TelMovil.csv',mime='text/csv')  
 
         cols_trafTelmovil=columns_dict('trafTelmovil')
-        diff_cols_trafTelmovil=list(set(GetAllColumns(id_trafico_TelMovil))-set(cols_trafTelmovil))
+        diff_cols_trafTelmovil=list(set(GetAllColumns(id_trafico_TelMovil))^set(cols_trafTelmovil))
         if len(diff_cols_trafTelmovil)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_trafTelmovil)
@@ -906,7 +907,7 @@ elif select_servicio=='Telefonía fija':
                 st.download_button(label="Descargar CSV",data=convert_df(LinTelLocal),file_name='Lineas_TelLocal.csv',mime='text/csv')        
 
         cols_linTelfija=columns_dict('linTelfija')
-        diff_cols_linTelfija=list(set(GetAllColumns(id_lineas_TelLocal))-set(cols_linTelfija))
+        diff_cols_linTelfija=list(set(GetAllColumns(id_lineas_TelLocal))^set(cols_linTelfija))
         if len(diff_cols_linTelfija)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_linTelfija)
@@ -963,7 +964,7 @@ elif select_servicio=='Telefonía fija':
                 st.download_button(label="Descargar CSV",data=convert_df(IngTelLocal),file_name='Ingresos_TelLocal.csv',mime='text/csv')            
 
         cols_ingTelfija=columns_dict('ingTelfija')
-        diff_cols_ingTelfija=list(set(GetAllColumns(id_ingresos_TelLocal))-set(cols_ingTelfija))
+        diff_cols_ingTelfija=list(set(GetAllColumns(id_ingresos_TelLocal))^set(cols_ingTelfija))
         if len(diff_cols_ingTelfija)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_ingTelfija)
@@ -1024,7 +1025,7 @@ elif select_servicio=='TV por suscripción':
                 st.download_button(label="Descargar CSV",data=convert_df(SusTVporSus),file_name='Suscriptores_TV_Suscripcion.csv',mime='text/csv')        
 
         cols_susTVporsus=columns_dict('susTVporsus')
-        diff_cols_susTVporsus=list(set(GetAllColumns(id_suscriptores_TVporSus))-set(cols_susTVporsus))
+        diff_cols_susTVporsus=list(set(GetAllColumns(id_suscriptores_TVporSus))^set(cols_susTVporsus))
         if len(diff_cols_susTVporsus)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_susTVporsus)
@@ -1081,7 +1082,7 @@ elif select_servicio=='TV por suscripción':
                 st.download_button(label="Descargar CSV",data=convert_df(IngTVporSus),file_name='Ingresos_TV_Suscripcion.csv',mime='text/csv')       
 
         cols_ingTVporsus=columns_dict('ingTVporsus')
-        diff_cols_ingTVporsus=list(set(GetAllColumns(id_ingresos_TVporSus))-set(cols_ingTVporsus))
+        diff_cols_ingTVporsus=list(set(GetAllColumns(id_ingresos_TVporSus))^set(cols_ingTVporsus))
         if len(diff_cols_ingTVporsus)!=0:
             st.warning('Hay nombres de columnas que difieren con su diccionario.',icon="⚠️")
             st.markdown(diff_cols_ingTVporsus)
