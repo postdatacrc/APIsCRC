@@ -117,7 +117,7 @@ def API(resourceid,columns_fields,columns,filters,metric,grouping_col):
     DF = DF.append(df)
     return DF    
      
-select_servicio=st.radio('Seleccione el servicio',['Internet fijo','Internet móvil','Telefonía móvil','Telefonía local','TV por suscripción'],horizontal=True)
+select_servicio=st.radio('Seleccione el servicio',['Internet fijo','Internet móvil','Telefonía móvil','Telefonía fija','TV por suscripción'],horizontal=True)
 Agroup_metric={'Suma':'sum','Promedio':'avg','Mínimo':'min','Máximo':'max','Desviación estándar':'std','Varianza':'variance','Conteo':'count'}
 
 if select_servicio=='Internet fijo':
@@ -677,9 +677,9 @@ elif select_servicio=='Telefonía móvil':
                 AgGrid(TrafTelMovil,width_mode='fit_columns')
                 st.download_button(label="Descargar CSV",data=convert_df(TrafTelMovil),file_name='Trafico_TelMovil.csv',mime='text/csv')  
 
-elif select_servicio=='Telefonía local':   
-    st.markdown("### <center>Telefonía local</center>",unsafe_allow_html=True)    
-    select_dimen=st.selectbox('Escoja la variable',['Líneas','Ingresos','Tráfico'])   
+elif select_servicio=='Telefonía fija':   
+    st.markdown("### <center>Telefonía fija</center>",unsafe_allow_html=True)    
+    select_dimen=st.selectbox('Escoja la variable',['Líneas','Ingresos'])   
 
     if select_dimen=='Líneas':
         st.markdown("#### <center>Líneas</center>",unsafe_allow_html=True)
@@ -732,7 +732,7 @@ elif select_servicio=='Telefonía local':
         
     if select_dimen=='Ingresos':
         st.markdown("#### <center>Ingresos</center>",unsafe_allow_html=True)
-        id_ingresos_TelLocal='f923f3bc-0628-44cc-beed-ca98b8bc3679'
+        id_ingresos_TelLocal='8b0fc631-461c-4a09-bb86-b5d591265e71'
         col1,col2=st.columns(2)
         with col1:
             columnsagrupIngTelLocal=st.multiselect('Escoja las columnas de su interes para obtener la base de datos, sin seleccionar el campo a agrupar.',GetAllColumns(id_ingresos_TelLocal))
