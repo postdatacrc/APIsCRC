@@ -106,7 +106,6 @@ def GetAllColumns(resourceid):
     return columns
     
 def API(resourceid,columns_fields,columns,filters,metric,grouping_col):
-    #resourceid = '540ea080-bf16-4d63-911f-3b4814e8e4f1'
     DF = pd.DataFrame()
     consulta='https://www.postdata.gov.co/api/action/datastore/search.json?resource_id=' + resourceid + ''\
              +filters\
@@ -116,7 +115,7 @@ def API(resourceid,columns_fields,columns,filters,metric,grouping_col):
     response_base = urlopen(consulta.replace(" ", "%20")+ '&limit=10000000') 
     json_base = json.loads(response_base.read())
     df = pd.DataFrame(json_base['result']['records'])
-    DF = DF.append(df)
+    DF = pd.concat([DF, df], ignore_index=True)
     return DF    
 
 url_dict={'susIntfijo':"https://postdata.gov.co/dataset/suscriptores-e-ingresos-de-internet-fijo/resource/34bbf5b5-0537-4bf0-8836-3f51d1a24162#{}",
