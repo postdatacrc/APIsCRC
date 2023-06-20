@@ -100,7 +100,7 @@ def convert_df(df):
 #Función para obtener los nombres de todas las columnas disponibles 
 def GetAllColumns(resourceid):
     consulta='https://www.postdata.gov.co/api/action/datastore/search.json?resource_id=' + resourceid
-    response = urlopen(consulta) 
+    response = urlopen(consulta, context=context) 
     json_data = json.loads(response.read())
     fields = json_data["result"]["fields"]
     columns = []
